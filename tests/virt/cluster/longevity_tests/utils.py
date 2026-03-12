@@ -4,6 +4,7 @@ import shutil
 import socket
 from threading import Thread
 
+from kubernetes.dynamic import DynamicClient
 from ocp_resources import pod
 from ocp_resources.data_source import DataSource
 from ocp_resources.datavolume import DataVolume
@@ -287,12 +288,12 @@ def deploy_datasources(datasource_dict):
             ds.clean_up()
 
 
-def create_containerdisk_vms(vm_deploys, client, name, namespace):
+def create_containerdisk_vms(vm_deploys, client, name, namespace, admin_client):
     vms = [
         VirtualMachineForTests(
             name=f"{name}-{deployment + 1}",
             namespace=namespace.name,
-            body=fedora_vm_body(name=name),
+            body=fedora_vm_body(name=name, admin_client=admin_client),
             client=client,
         )
         for deployment in range(vm_deploys)
@@ -302,6 +303,7 @@ def create_containerdisk_vms(vm_deploys, client, name, namespace):
 
 
 def create_dv_vms(
+    admin_client: DynamicClient,
     vm_deploys,
     client,
     namespace,
@@ -319,6 +321,7 @@ def create_dv_vms(
                 labels=Template.generate_template_labels(**vm[vm_name].get("os_labels")),
                 namespace=namespace.name,
                 client=client,
+                admin_client=admin_client,
                 termination_grace_period=0,
                 cpu_cores=vm[vm_name].get("cpu_cores"),
                 cpu_threads=vm[vm_name].get("cpu_threads"),

@@ -254,6 +254,7 @@ def alter_np_configuration(
 
 @pytest.fixture(scope="class")
 def vm_placement_vm_work3(
+    admin_client,
     namespace,
     unprivileged_client,
     nodes_labeled,
@@ -263,7 +264,7 @@ def vm_placement_vm_work3(
         namespace=namespace.name,
         name=name,
         node_selector=get_node_selector_dict(node_selector=nodes_labeled["work3"][0]),
-        body=fedora_vm_body(name=name),
+        body=fedora_vm_body(name=name, admin_client=admin_client),
         client=unprivileged_client,
         teardown=False,
     ) as vm:

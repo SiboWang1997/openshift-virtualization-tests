@@ -320,6 +320,7 @@ def data_sources(request, keep_resources, admin_client, golden_images_scale_dvs)
 
 @pytest.fixture(scope="class")
 def scale_vms(
+    admin_client,
     unprivileged_client,
     data_sources,
     scale_namespace,
@@ -347,6 +348,7 @@ def scale_vms(
                             name=f"vm-{vm_base_name}-b{batch_number}-{vm_index}",
                             namespace=scale_namespace.name,
                             client=unprivileged_client,
+                            admin_client=admin_client,
                             cpu_cores=vm_info["cores"],
                             memory_requests=vm_info["memory"],
                             data_source=data_sources[f"{vm_base_name}-datasource"],
@@ -455,6 +457,7 @@ class TestScale:
         for batch in scale_vms:
             for vm in batch:
                 wait_for_migration_finished(
+                    client=vm.client,
                     namespace=vm.namespace,
                     migration=vm_migration_info[vm.name][MIGRATION_INSTANCE_STR],
                 )

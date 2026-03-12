@@ -15,12 +15,14 @@ from utilities.virt import running_vm, vm_instance_from_template
 @pytest.fixture()
 def windows_vm_for_memory_dump(
     request,
+    admin_client,
     unprivileged_client,
     namespace,
     golden_image_data_source_scope_function,
 ):
     with vm_instance_from_template(
         request=request,
+        admin_client=admin_client,
         unprivileged_client=unprivileged_client,
         namespace=namespace,
         data_source=golden_image_data_source_scope_function,

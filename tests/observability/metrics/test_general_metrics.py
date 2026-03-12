@@ -15,11 +15,12 @@ LOGGER = logging.getLogger(__name__)
 
 @pytest.fixture(scope="class")
 def fedora_vm_without_name_in_label(
+    admin_client,
     namespace,
     unprivileged_client,
 ):
     vm_name = "test-vm-label-fedora-vm"
-    vm_body = fedora_vm_body(name=vm_name)
+    vm_body = fedora_vm_body(name=vm_name, admin_client=admin_client)
     virt_launcher_pod_labels = vm_body["spec"]["template"]["metadata"].get("labels")
     vm_label = vm_body["metadata"].get("labels")
 

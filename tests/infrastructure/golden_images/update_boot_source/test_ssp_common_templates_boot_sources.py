@@ -61,6 +61,7 @@ def existing_data_source_volume(
 
 @pytest.fixture()
 def auto_update_boot_source_vm(
+    admin_client,
     unprivileged_client,
     namespace,
     existing_data_source_volume,
@@ -71,6 +72,7 @@ def auto_update_boot_source_vm(
         name=f"{existing_data_source_volume.name}-vm",
         namespace=namespace.name,
         client=unprivileged_client,
+        admin_client=admin_client,
         labels=template_labels(os=boot_source_os_from_data_source_dict),
         data_source=existing_data_source_volume,
     ) as vm:
@@ -79,11 +81,12 @@ def auto_update_boot_source_vm(
 
 
 @pytest.fixture()
-def vm_without_boot_source(unprivileged_client, namespace, rhel9_data_source_scope_session):
+def vm_without_boot_source(admin_client, unprivileged_client, namespace, rhel9_data_source_scope_session):
     with VirtualMachineForTestsFromTemplate(
         name=f"{rhel9_data_source_scope_session.name}-vm",
         namespace=namespace.name,
         client=unprivileged_client,
+        admin_client=admin_client,
         labels=template_labels(os="rhel9.0"),
         data_source=rhel9_data_source_scope_session,
         non_existing_pvc=True,

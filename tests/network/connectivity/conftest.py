@@ -261,6 +261,7 @@ def nad_ovs_bridge_vlan_3(
 
 @pytest.fixture(scope="class")
 def vm_linux_bridge_attached_vma_source(
+    admin_client,
     ipv4_supported_cluster,
     ipv6_supported_cluster,
     worker_node1,
@@ -293,11 +294,13 @@ def vm_linux_bridge_attached_vma_source(
         client=unprivileged_client,
         namespace=namespace,
         cloud_init_data=cloud_init_data,
+        admin_client=admin_client,
     )
 
 
 @pytest.fixture(scope="class")
 def vm_ovs_bridge_attached_vma_source(
+    admin_client,
     ipv4_supported_cluster,
     ipv6_supported_cluster,
     worker_node1,
@@ -330,11 +333,13 @@ def vm_ovs_bridge_attached_vma_source(
         client=unprivileged_client,
         namespace=namespace,
         cloud_init_data=cloud_init_data,
+        admin_client=admin_client,
     )
 
 
 @pytest.fixture(scope="class")
 def vm_linux_bridge_attached_vmb_destination(
+    admin_client,
     ipv4_supported_cluster,
     ipv6_supported_cluster,
     worker_node2,
@@ -367,11 +372,13 @@ def vm_linux_bridge_attached_vmb_destination(
         client=unprivileged_client,
         namespace=namespace,
         cloud_init_data=cloud_init_data,
+        admin_client=admin_client,
     )
 
 
 @pytest.fixture(scope="class")
 def vm_ovs_bridge_attached_vmb_destination(
+    admin_client,
     ipv4_supported_cluster,
     ipv6_supported_cluster,
     worker_node2,
@@ -404,4 +411,5 @@ def vm_ovs_bridge_attached_vmb_destination(
         client=unprivileged_client,
         namespace=namespace,
         cloud_init_data=cloud_init_data,
+        admin_client=admin_client,
     )

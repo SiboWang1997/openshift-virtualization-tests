@@ -198,6 +198,7 @@ def vm_for_storage_class_migration_from_template_with_dv(
 @pytest.fixture(scope="class")
 def vm_for_storage_class_migration_from_template_with_existing_dv(
     request,
+    admin_client,
     unprivileged_client,
     namespace,
     data_volume_scope_class,
@@ -205,6 +206,7 @@ def vm_for_storage_class_migration_from_template_with_existing_dv(
 ):
     with vm_instance_from_template(
         request=request,
+        admin_client=admin_client,
         unprivileged_client=unprivileged_client,
         namespace=namespace,
         existing_data_volume=data_volume_scope_class,
@@ -296,12 +298,12 @@ def blank_disk_dv_for_storage_migration(unprivileged_client, namespace, source_s
 
 
 @pytest.fixture(scope="class")
-def fedora_vm_for_hotplug_and_storage_migration(unprivileged_client, namespace, cpu_for_migration):
+def fedora_vm_for_hotplug_and_storage_migration(admin_client, unprivileged_client, namespace, cpu_for_migration):
     name = "fedora-volume-hotplug-vm"
     with VirtualMachineForTests(
         name=name,
         namespace=namespace.name,
-        body=fedora_vm_body(name=name),
+        body=fedora_vm_body(name=name, admin_client=admin_client),
         cpu_model=cpu_for_migration,
         client=unprivileged_client,
     ) as vm:

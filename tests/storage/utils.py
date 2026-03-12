@@ -119,6 +119,7 @@ def upload_token_request(storage_ns_name, pvc_name, data, client):
 
 
 def create_windows_vm_validate_guest_agent_info(
+    admin_client,
     dv,
     namespace,
     unprivileged_client,
@@ -126,6 +127,7 @@ def create_windows_vm_validate_guest_agent_info(
 ):
     with vm_instance_from_template(
         request=vm_params,
+        admin_client=admin_client,
         existing_data_volume=dv,
         namespace=namespace,
         unprivileged_client=unprivileged_client,
@@ -345,7 +347,7 @@ def get_hpp_daemonset(hco_namespace, hpp_cr_suffix, admin_client):
 
 
 @contextmanager
-def create_windows19_vm(dv_name, namespace, client, vm_name, cpu_model, storage_class):
+def create_windows19_vm(admin_client: DynamicClient, dv_name, namespace, client, vm_name, cpu_model, storage_class):
     artifactory_secret = get_artifactory_secret(namespace=namespace)
     artifactory_config_map = get_artifactory_config_map(namespace=namespace)
     dv = DataVolume(
@@ -365,6 +367,7 @@ def create_windows19_vm(dv_name, namespace, client, vm_name, cpu_model, storage_
         name=vm_name,
         namespace=namespace,
         client=client,
+        admin_client=admin_client,
         labels=Template.generate_template_labels(**py_config["latest_windows_os_dict"]["template_labels"]),
         cpu_model=cpu_model,
         data_volume_template={"metadata": dv.res["metadata"], "spec": dv.res["spec"]},

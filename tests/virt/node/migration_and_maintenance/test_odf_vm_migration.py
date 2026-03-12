@@ -9,6 +9,7 @@ from utilities.virt import migrate_vm_and_verify, vm_instance_from_template
 @pytest.fixture
 def vm_with_cephfs_storage(
     request,
+    admin_client,
     unprivileged_client,
     namespace,
     golden_image_data_source_for_test_scope_function,
@@ -16,6 +17,7 @@ def vm_with_cephfs_storage(
 ):
     with vm_instance_from_template(
         request=request,
+        admin_client=admin_client,
         unprivileged_client=unprivileged_client,
         namespace=namespace,
         data_volume_template=data_volume_template_with_source_ref_dict(

@@ -7,12 +7,13 @@ from utilities.virt import VirtualMachineForTests, fedora_vm_body, running_vm
 def vm_for_test_pvspinlock(
     namespace,
     unprivileged_client,
+    admin_client,
 ):
     name = "vm-for-pvspinlock-test"
     with VirtualMachineForTests(
         name=name,
         namespace=namespace.name,
-        body=fedora_vm_body(name=name),
+        body=fedora_vm_body(name=name, admin_client=admin_client),
         pvspinlock_enabled=False,
     ) as vm:
         running_vm(vm=vm)

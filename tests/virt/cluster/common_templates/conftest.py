@@ -29,6 +29,7 @@ def matrix_centos_os_golden_image_data_source(admin_client, golden_images_namesp
 
 @pytest.fixture(scope="class")
 def matrix_centos_os_vm_from_template(
+    admin_client,
     unprivileged_client,
     namespace,
     centos_os_matrix__class__,
@@ -36,6 +37,7 @@ def matrix_centos_os_vm_from_template(
     cpu_for_migration,
 ):
     return matrix_os_vm_from_template(
+        admin_client=admin_client,
         unprivileged_client=unprivileged_client,
         namespace=namespace,
         os_matrix=centos_os_matrix__class__,
@@ -58,6 +60,7 @@ def matrix_fedora_os_golden_image_data_source(admin_client, golden_images_namesp
 @pytest.fixture(scope="class")
 def matrix_fedora_os_vm_from_template(
     request,
+    admin_client,
     unprivileged_client,
     namespace,
     fedora_os_matrix__class__,
@@ -66,6 +69,7 @@ def matrix_fedora_os_vm_from_template(
 ):
     return matrix_os_vm_from_template(
         request=request,
+        admin_client=admin_client,
         unprivileged_client=unprivileged_client,
         namespace=namespace,
         os_matrix=fedora_os_matrix__class__,
@@ -87,6 +91,7 @@ def matrix_rhel_os_golden_image_data_source(admin_client, golden_images_namespac
 
 @pytest.fixture(scope="class")
 def matrix_rhel_os_vm_from_template(
+    admin_client,
     unprivileged_client,
     namespace,
     rhel_os_matrix__class__,
@@ -94,6 +99,7 @@ def matrix_rhel_os_vm_from_template(
     cpu_for_migration,
 ):
     return matrix_os_vm_from_template(
+        admin_client=admin_client,
         unprivileged_client=unprivileged_client,
         namespace=namespace,
         os_matrix=rhel_os_matrix__class__,
@@ -115,6 +121,7 @@ def matrix_windows_os_golden_image_data_source(admin_client, golden_images_names
 
 @pytest.fixture(scope="class")
 def matrix_windows_os_vm_from_template(
+    admin_client,
     unprivileged_client,
     namespace,
     windows_os_matrix__class__,
@@ -122,6 +129,7 @@ def matrix_windows_os_vm_from_template(
     modern_cpu_for_migration,
 ):
     return matrix_os_vm_from_template(
+        admin_client=admin_client,
         unprivileged_client=unprivileged_client,
         namespace=namespace,
         os_matrix=windows_os_matrix__class__,
@@ -137,6 +145,7 @@ def matrix_windows_os_vm_from_template(
 @pytest.fixture()
 def tablet_device_vm(
     request,
+    admin_client,
     unprivileged_client,
     namespace,
     golden_image_data_volume_template_for_test_scope_class,
@@ -144,6 +153,7 @@ def tablet_device_vm(
 ):
     with vm_instance_from_template(
         request=request,
+        admin_client=admin_client,
         unprivileged_client=unprivileged_client,
         namespace=namespace,
         data_volume_template=golden_image_data_volume_template_for_test_scope_class,

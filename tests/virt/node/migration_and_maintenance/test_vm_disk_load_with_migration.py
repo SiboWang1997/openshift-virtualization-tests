@@ -16,6 +16,7 @@ LOGGER = logging.getLogger(__name__)
 @pytest.fixture()
 def vm_with_fio(
     request,
+    admin_client,
     cpu_for_migration,
     unprivileged_client,
     namespace,
@@ -26,6 +27,7 @@ def vm_with_fio(
         request.param["cpu_threads"] = 1
     with vm_instance_from_template(
         request=request,
+        admin_client=admin_client,
         unprivileged_client=unprivileged_client,
         vm_cpu_model=cpu_for_migration,
         namespace=namespace,

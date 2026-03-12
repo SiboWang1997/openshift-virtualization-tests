@@ -71,6 +71,7 @@ def rpm_file_name(is_s390x_cluster):
 @pytest.fixture()
 def vhostmd_vm1(
     request,
+    admin_client,
     unprivileged_client,
     namespace,
     golden_image_data_source_scope_function,
@@ -78,6 +79,7 @@ def vhostmd_vm1(
 ):
     with vm_instance_from_template(
         request=request,
+        admin_client=admin_client,
         unprivileged_client=unprivileged_client,
         namespace=namespace,
         data_source=golden_image_data_source_scope_function,
@@ -90,6 +92,7 @@ def vhostmd_vm1(
 @pytest.fixture()
 def vhostmd_vm2(
     request,
+    admin_client,
     unprivileged_client,
     namespace,
     golden_image_data_source_scope_function,
@@ -97,6 +100,7 @@ def vhostmd_vm2(
 ):
     with vm_instance_from_template(
         request=request,
+        admin_client=admin_client,
         unprivileged_client=unprivileged_client,
         namespace=namespace,
         data_source=golden_image_data_source_scope_function,

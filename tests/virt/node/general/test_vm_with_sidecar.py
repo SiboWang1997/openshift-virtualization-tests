@@ -5,13 +5,14 @@ VM with sidecar
 import shlex
 
 import pytest
+from kubernetes.dynamic import DynamicClient
 from pyhelper_utils.shell import run_ssh_commands
 
 from utilities.virt import VirtualMachineForTests, fedora_vm_body, running_vm
 
 
 class FedoraVirtualMachineWithSideCar(VirtualMachineForTests):
-    def __init__(self, name, namespace, interfaces=None, networks=None, client=None):
+    def __init__(self, name, namespace, admin_client, interfaces=None, networks=None, client=None):
         super().__init__(
             name=name,
             namespace=namespace,
@@ -19,9 +20,10 @@ class FedoraVirtualMachineWithSideCar(VirtualMachineForTests):
             networks=networks,
             client=client,
         )
+        self.admin_client: DynamicClient = admin_client
 
     def to_dict(self):
-        self.body = fedora_vm_body(name=self.name)
+        self.body = fedora_vm_body(name=self.name, admin_client=self.admin_client)
         super().to_dict()
 
         self.res["spec"]["template"]["metadata"].setdefault("annotations", {})
@@ -36,10 +38,12 @@ class FedoraVirtualMachineWithSideCar(VirtualMachineForTests):
 
 
 @pytest.fixture()
-def sidecar_vm(namespace, unprivileged_client):
+def sidecar_vm(namespace, unprivileged_client, admin_client):
     """Test VM with sidecar hook"""
     name = "vmi-with-sidecar-hook"
-    with FedoraVirtualMachineWithSideCar(name=name, namespace=namespace.name, client=unprivileged_client) as vm:
+    with FedoraVirtualMachineWithSideCar(
+        name=name, namespace=namespace.name, admin_client=admin_client, client=unprivileged_client
+    ) as vm:
         running_vm(vm=vm)
         yield vm
 

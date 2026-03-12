@@ -10,7 +10,7 @@ default_run_strategy = VirtualMachine.RunStrategy.MANUAL
 
 
 @contextmanager
-def container_disk_vm(namespace, unprivileged_client, cpu_model=None, data_volume_template=None):
+def container_disk_vm(namespace, unprivileged_client, admin_client, cpu_model=None, data_volume_template=None):
     """lifecycle_vm is used to call this fixture and data_volume_vm; data_source is not needed in this use cases"""
     name = "fedora-vm-lifecycle"
     with VirtualMachineForTests(
@@ -18,14 +18,14 @@ def container_disk_vm(namespace, unprivileged_client, cpu_model=None, data_volum
         namespace=namespace.name,
         cpu_model=cpu_model,
         client=unprivileged_client,
-        body=fedora_vm_body(name=name),
+        body=fedora_vm_body(name=name, admin_client=admin_client),
         run_strategy=default_run_strategy,
     ) as vm:
         yield vm
 
 
 @contextmanager
-def data_volume_vm(unprivileged_client, namespace, data_volume_template, cpu_model=None):
+def data_volume_vm(unprivileged_client, namespace, admin_client, data_volume_template, cpu_model=None):
     with VirtualMachineForTests(
         name="rhel-vm-lifecycle",
         namespace=namespace.name,
@@ -45,6 +45,7 @@ def lifecycle_vm(
     namespace,
     vm_volumes_matrix__class__,
     golden_image_data_volume_template_for_test_scope_module,
+    admin_client,
 ):
     """Wrapper fixture to generate the desired VM
     vm_volumes_matrix returns a string.
@@ -54,6 +55,7 @@ def lifecycle_vm(
     with globals()[vm_volumes_matrix__class__](
         unprivileged_client=unprivileged_client,
         namespace=namespace,
+        admin_client=admin_client,
         data_volume_template=golden_image_data_volume_template_for_test_scope_module,
         cpu_model=cpu_for_migration,
     ) as vm:

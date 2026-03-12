@@ -123,7 +123,7 @@ def extract_template_labels(template_labels):
 
 
 @contextmanager
-def diskless_vm_from_template(client, name, namespace, base_template_labels):
+def diskless_vm_from_template(admin_client, client, name, namespace, base_template_labels):
     extracted_template_labels = extract_template_labels(template_labels=base_template_labels)
     template_labels = Template.generate_template_labels(
         os=extracted_template_labels[Template.Labels.OS],
@@ -132,6 +132,7 @@ def diskless_vm_from_template(client, name, namespace, base_template_labels):
     )
     vm = VirtualMachineForTestsFromTemplate(
         client=client,
+        admin_client=admin_client,
         name=name,
         namespace=namespace.name,
         labels=template_labels,

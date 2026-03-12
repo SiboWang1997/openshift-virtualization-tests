@@ -11,6 +11,7 @@ def create_running_vm(
     client,
     namespace,
     cloud_init_data,
+    admin_client,
 ):
     networks = OrderedDict()
 
@@ -20,7 +21,7 @@ def create_running_vm(
     with VirtualMachineForTests(
         namespace=namespace.name,
         name=name,
-        body=fedora_vm_body(name=name),
+        body=fedora_vm_body(name=name, admin_client=admin_client),
         networks=networks,
         interfaces=networks.keys(),
         node_selector=node_selector,

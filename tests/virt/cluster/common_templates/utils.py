@@ -498,6 +498,7 @@ def get_matrix_os_golden_image_data_source(
 
 
 def matrix_os_vm_from_template(
+    admin_client: DynamicClient,
     unprivileged_client: DynamicClient,
     namespace: Namespace,
     data_source_object: DataSource,
@@ -513,6 +514,7 @@ def matrix_os_vm_from_template(
         name=os_matrix_key,
         namespace=namespace.name,
         client=unprivileged_client,
+        admin_client=admin_client,
         data_source=data_source_object,
         labels=Template.generate_template_labels(**os_matrix[os_matrix_key]["template_labels"]),
         data_volume_template=data_volume_template,

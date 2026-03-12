@@ -78,6 +78,7 @@ def datasources_for_upgrade(admin_client, dvs_for_upgrade):
 
 @pytest.fixture(scope="session")
 def vms_for_upgrade(
+    admin_client,
     unprivileged_client,
     virt_upgrade_namespace,
     datasources_for_upgrade,
@@ -95,6 +96,7 @@ def vms_for_upgrade(
                     name=data_source.name.replace("ds", "vm")[0:26],
                     namespace=virt_upgrade_namespace.name,
                     client=unprivileged_client,
+                    admin_client=admin_client,
                     labels=Template.generate_template_labels(**rhel_latest_os_params["rhel_template_labels"]),
                     data_source=data_source,
                     cpu_model=cpu_for_migration,
@@ -185,6 +187,7 @@ def run_strategy_golden_image_dv(dvs_for_upgrade):
 
 @pytest.fixture(scope="session")
 def manual_run_strategy_vm(
+    admin_client,
     unprivileged_client,
     upgrade_namespace_scope_session,
     run_strategy_golden_image_data_source,
@@ -192,6 +195,7 @@ def manual_run_strategy_vm(
     rhel_latest_os_params,
 ):
     with vm_from_template(
+        admin_client=admin_client,
         vm_name="manual-run-strategy-vm",
         namespace=upgrade_namespace_scope_session.name,
         client=unprivileged_client,
@@ -207,6 +211,7 @@ def manual_run_strategy_vm(
 
 @pytest.fixture(scope="session")
 def always_run_strategy_vm(
+    admin_client,
     unprivileged_client,
     upgrade_namespace_scope_session,
     run_strategy_golden_image_data_source,
@@ -214,6 +219,7 @@ def always_run_strategy_vm(
     rhel_latest_os_params,
 ):
     with vm_from_template(
+        admin_client=admin_client,
         vm_name="always-run-strategy-vm",
         namespace=upgrade_namespace_scope_session.name,
         client=unprivileged_client,
@@ -263,6 +269,7 @@ def windows_vm(
             source=generate_data_source_dict(dv=dv),
         ) as ds:
             with vm_from_template(
+                admin_client=admin_client,
                 vm_name="windows-vm",
                 namespace=virt_upgrade_namespace.name,
                 client=unprivileged_client,
@@ -335,12 +342,12 @@ def post_copy_migration_policy_for_upgrade(admin_client):
 
 
 @pytest.fixture(scope="session")
-def vm_for_post_copy_upgrade(virt_upgrade_namespace, unprivileged_client, cpu_for_migration):
+def vm_for_post_copy_upgrade(virt_upgrade_namespace, unprivileged_client, cpu_for_migration, admin_client):
     vm_name = "vm-for-post-copy-upgrade-test"
     with VirtualMachineForTests(
         name=vm_name,
         namespace=virt_upgrade_namespace.name,
-        body=fedora_vm_body(name=vm_name),
+        body=fedora_vm_body(name=vm_name, admin_client=admin_client),
         client=unprivileged_client,
         cpu_model=cpu_for_migration,
         additional_labels=VM_LABEL,

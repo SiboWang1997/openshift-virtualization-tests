@@ -362,6 +362,7 @@ def golden_image_data_volume_template_for_test_scope_function(
 @pytest.fixture(scope="class")
 def vm_for_test_from_template_scope_class(
     request,
+    admin_client,
     unprivileged_client,
     namespace,
     golden_image_data_volume_template_for_test_scope_class,
@@ -369,6 +370,7 @@ def vm_for_test_from_template_scope_class(
 ):
     with vm_instance_from_template(
         request=request,
+        admin_client=admin_client,
         unprivileged_client=unprivileged_client,
         namespace=namespace,
         data_volume_template=golden_image_data_volume_template_for_test_scope_class,

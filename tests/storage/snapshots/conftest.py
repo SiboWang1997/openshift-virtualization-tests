@@ -49,11 +49,13 @@ def permissions_for_dv(namespace, admin_client):
 def windows_vm_for_snapshot(
     request,
     namespace,
+    admin_client,
     unprivileged_client,
     modern_cpu_for_migration,
     storage_class_matrix_snapshot_matrix__module__,
 ):
     with create_windows19_vm(
+        admin_client=admin_client,
         dv_name=request.param["dv_name"],
         namespace=namespace.name,
         client=unprivileged_client,

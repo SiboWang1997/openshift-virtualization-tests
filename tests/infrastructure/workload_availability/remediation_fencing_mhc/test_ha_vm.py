@@ -48,13 +48,13 @@ def machine_health_check_reboot(admin_client, worker_machine1):
 
 
 @pytest.fixture()
-def ha_vm_container_disk(request, unprivileged_client, namespace):
+def ha_vm_container_disk(request, admin_client, unprivileged_client, namespace):
     run_strategy = request.param["run_strategy"]
     name = f"ha-vm-container-disk-{run_strategy}".lower()
     with VirtualMachineForTests(
         name=name,
         namespace=namespace.name,
-        body=fedora_vm_body(name=name),
+        body=fedora_vm_body(name=name, admin_client=admin_client),
         client=unprivileged_client,
         run_strategy=run_strategy,
     ) as vm:
@@ -63,13 +63,14 @@ def ha_vm_container_disk(request, unprivileged_client, namespace):
 
 
 @pytest.fixture()
-def ha_vm_dv_disk(request, unprivileged_client, namespace, golden_image_data_source_scope_function):
+def ha_vm_dv_disk(request, admin_client, unprivileged_client, namespace, golden_image_data_source_scope_function):
     run_strategy = request.param["run_strategy"]
     name = f"ha-vm-dv-disk-{run_strategy}".lower()
     with VirtualMachineForTestsFromTemplate(
         name=name,
         namespace=namespace.name,
         client=unprivileged_client,
+        admin_client=admin_client,
         labels=Template.generate_template_labels(**py_config["latest_fedora_os_dict"]["template_labels"]),
         data_source=golden_image_data_source_scope_function,
         run_strategy=run_strategy,

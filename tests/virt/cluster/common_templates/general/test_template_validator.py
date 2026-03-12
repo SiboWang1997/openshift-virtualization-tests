@@ -31,7 +31,7 @@ LOGGER = logging.getLogger(__name__)
     indirect=True,
 )
 def test_template_validation_min_memory(
-    unprivileged_client, namespace, golden_image_data_source_for_test_scope_function
+    admin_client, unprivileged_client, namespace, golden_image_data_source_for_test_scope_function
 ):
     LOGGER.info("Test template validator - minimum required memory")
 
@@ -40,6 +40,7 @@ def test_template_validation_min_memory(
             name="rhel-min-memory-validation",
             namespace=namespace.name,
             client=unprivileged_client,
+            admin_client=admin_client,
             data_source=golden_image_data_source_for_test_scope_function,
             labels=Template.generate_template_labels(**RHEL_LATEST_LABELS),
             memory_guest="0.5G",

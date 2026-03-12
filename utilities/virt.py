@@ -29,7 +29,7 @@ from ocp_resources.kubevirt import KubeVirt
 from ocp_resources.namespace import Namespace
 from ocp_resources.node import Node
 from ocp_resources.pod import Pod
-from ocp_resources.resource import Resource, ResourceEditor, get_client
+from ocp_resources.resource import Resource, ResourceEditor
 from ocp_resources.service import Service
 from ocp_resources.storage_profile import StorageProfile
 from ocp_resources.template import Template
@@ -1204,6 +1204,7 @@ class VirtualMachineForTestsFromTemplate(VirtualMachineForTests):
         name,
         namespace,
         client,
+        admin_client,
         eviction_strategy=None,
         labels=None,
         data_source=None,
@@ -1331,6 +1332,7 @@ class VirtualMachineForTestsFromTemplate(VirtualMachineForTests):
             vm_affinity=vm_affinity,
             os_flavor=self.os_flavor,
         )
+        self.admin_client = admin_client
         self.data_source = data_source
         self.data_volume_template = data_volume_template
         self.existing_data_volume = existing_data_volume
@@ -1447,7 +1449,7 @@ class VirtualMachineForTestsFromTemplate(VirtualMachineForTests):
         }
 
         template_object = self.template_object or get_template_by_labels(
-            admin_client=self.client, template_labels=self.template_labels
+            admin_client=self.admin_client, template_labels=self.template_labels
         )
 
         # Set password for non-Windows VMs; for Windows VM, the password is already set in the image
@@ -1462,7 +1464,7 @@ class VirtualMachineForTestsFromTemplate(VirtualMachineForTests):
         if self.template_params:
             template_kwargs.update(self.template_params)
 
-        resources_list = template_object.process(client=get_client(), **template_kwargs)
+        resources_list = template_object.process(client=self.admin_client, **template_kwargs)
         for resource in resources_list:
             if resource["kind"] == VirtualMachine.kind and resource["metadata"]["name"] == self.name:
                 return resource
@@ -1514,7 +1516,7 @@ def vm_console_run_commands(
     return output
 
 
-def fedora_vm_body(name: str) -> dict[str, Any]:
+def fedora_vm_body(name: str, admin_client: DynamicClient) -> dict[str, Any]:
     pull_secret = utilities.infra.generate_openshift_pull_secret_file()
 
     # Make sure we can find the file even if utilities was installed via pip.
@@ -1528,7 +1530,7 @@ def fedora_vm_body(name: str) -> dict[str, Any]:
         image=image,
         pull_secret=pull_secret,
         architecture=utilities.cpu.get_nodes_cpu_architecture(
-            nodes=list(Node.get(client=get_client())),
+            nodes=list(Node.get(client=admin_client)),
         ),
     )
     image_digest = image_info["digest"]
@@ -1600,7 +1602,7 @@ class ServiceForVirtualMachineForTests(Service):
             return self.instance.spec.clusterIP
 
         vm_node = Node(
-            client=get_client(),
+            client=self.client,
             name=self.vmi.instance.status.nodeName,
         )
         if self.service_type == Service.Type.NODE_PORT:
@@ -1916,7 +1918,9 @@ def migrate_vm_and_verify(
     ) as migration:
         if not wait_for_migration_success:
             return migration
-        wait_for_migration_finished(namespace=vm.namespace, migration=migration, timeout=timeout)
+        wait_for_migration_finished(
+            client=client or vm.client, namespace=vm.namespace, migration=migration, timeout=timeout
+        )
 
     verify_vm_migrated(
         vm=vm,
@@ -1927,7 +1931,7 @@ def migrate_vm_and_verify(
     return None
 
 
-def wait_for_migration_finished(namespace, migration, timeout=TIMEOUT_12MIN):
+def wait_for_migration_finished(client, namespace, migration, timeout=TIMEOUT_12MIN):
     sleep = TIMEOUT_10SEC
     samples = TimeoutSampler(wait_timeout=timeout, sleep=sleep, func=lambda: migration.instance.status.phase)
     counter = 0
@@ -1943,7 +1947,7 @@ def wait_for_migration_finished(namespace, migration, timeout=TIMEOUT_12MIN):
                 if counter >= TIMEOUT_4MIN / sleep:
                     # Get status/events for PODs in non-running or failed state
                     for pod in utilities.infra.get_pod_by_name_prefix(
-                        client=get_client(),
+                        client=client,
                         pod_prefix=VIRT_LAUNCHER,
                         namespace=namespace,
                         get_all=True,
@@ -2026,6 +2030,7 @@ def prepare_cloud_init_user_data(section, data):
 @contextmanager
 def vm_instance_from_template(
     request,
+    admin_client,
     unprivileged_client,
     namespace,
     data_source=None,
@@ -2059,6 +2064,7 @@ def vm_instance_from_template(
         name=vm_name,
         namespace=namespace.name,
         client=unprivileged_client,
+        admin_client=admin_client,
         labels=Template.generate_template_labels(**params["template_labels"]),
         data_source=data_source,
         data_volume_template=data_volume_template,
@@ -2310,7 +2316,10 @@ def check_migration_process_after_node_drain(client, vm, admin_client):
     wait_for_node_schedulable_status(node=source_node, status=False)
     vmim = get_created_migration_job(vm=vm, client=client, timeout=TIMEOUT_5MIN)
     wait_for_migration_finished(
-        namespace=vm.namespace, migration=vmim, timeout=TIMEOUT_30MIN if "windows" in vm.name else TIMEOUT_10MIN
+        client=client,
+        namespace=vm.namespace,
+        migration=vmim,
+        timeout=TIMEOUT_30MIN if "windows" in vm.name else TIMEOUT_10MIN,
     )
 
     target_pod = vm.vmi.get_virt_launcher_pod(privileged_client=admin_client)

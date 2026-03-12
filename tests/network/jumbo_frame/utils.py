@@ -10,6 +10,7 @@ def create_vm_for_jumbo_test(
     index,
     namespace_name,
     client,
+    admin_client,
     cloud_init_data=None,
     networks=None,
     node_selector=None,
@@ -19,7 +20,7 @@ def create_vm_for_jumbo_test(
     with VirtualMachineForTests(
         namespace=namespace_name,
         name=vm_name,
-        body=fedora_vm_body(name=vm_name),
+        body=fedora_vm_body(name=vm_name, admin_client=admin_client),
         node_selector=node_selector,
         cloud_init_data=cloud_init_data,
         networks=networks,

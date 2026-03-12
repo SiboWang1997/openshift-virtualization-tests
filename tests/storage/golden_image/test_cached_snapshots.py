@@ -185,6 +185,7 @@ def disabled_data_import_cron_annotation_rhel9(
 @pytest.fixture()
 def rhel9_golden_image_vm(
     request,
+    admin_client,
     snapshot_storage_class_name_scope_module,
     rhel9_cached_snapshot,
     rhel9_data_source_scope_session,
@@ -193,6 +194,7 @@ def rhel9_golden_image_vm(
 ):
     with vm_instance_from_template(
         request=request,
+        admin_client=admin_client,
         unprivileged_client=unprivileged_client,
         namespace=namespace,
         data_volume_template=data_volume_template_with_source_ref_dict(

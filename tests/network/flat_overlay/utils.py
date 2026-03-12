@@ -29,6 +29,7 @@ def create_flat_overlay_vm(
     nad_name,
     unprivileged_client,
     host_ip_suffix,
+    admin_client,
     worker_node_hostname=None,
 ):
     networks = {nad_name: nad_name}
@@ -44,7 +45,7 @@ def create_flat_overlay_vm(
         networks=networks,
         interfaces=networks.keys(),
         client=unprivileged_client,
-        body=fedora_vm_body(name=vm_name),
+        body=fedora_vm_body(name=vm_name, admin_client=admin_client),
         cloud_init_data=cloud_init_data,
         node_selector=get_node_selector_dict(node_selector=worker_node_hostname),
     ) as vm:

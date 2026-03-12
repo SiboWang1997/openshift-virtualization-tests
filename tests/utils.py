@@ -73,6 +73,7 @@ LOGGER = logging.getLogger(__name__)
 def create_vms(
     name_prefix,
     namespace_name,
+    admin_client,
     vm_count=NUM_TEST_VMS,
     client=None,
     ssh=True,
@@ -85,6 +86,7 @@ def create_vms(
     Args:
         name_prefix (str): prefix to be used to name virtualmachines
         namespace_name (str): Namespace to be used for vm creation
+        admin_client (DynamicClient): Admin DynamicClient object
         vm_count (int): Number of vms to be created
         node_selector_labels (str): Labels for node selector.
         client (DynamicClient): DynamicClient object
@@ -100,7 +102,7 @@ def create_vms(
         with VirtualMachineForTests(
             name=vm_name,
             namespace=namespace_name,
-            body=fedora_vm_body(name=vm_name),
+            body=fedora_vm_body(name=vm_name, admin_client=admin_client),
             node_selector_labels=node_selector_labels,
             teardown=False,
             run_strategy=VirtualMachine.RunStrategy.ALWAYS,
@@ -168,7 +170,10 @@ def hotplug_instance_type_vm_and_verify(vm, client, instance_type):
 def verify_hotplug(vm, client, sockets=None, memory_guest=None):
     vmim = get_created_migration_job(vm=vm, client=client)
     wait_for_migration_finished(
-        namespace=vm.namespace, migration=vmim, timeout=TIMEOUT_30MIN if "windows" in vm.name else TIMEOUT_10MIN
+        client=client,
+        namespace=vm.namespace,
+        migration=vmim,
+        timeout=TIMEOUT_30MIN if "windows" in vm.name else TIMEOUT_10MIN,
     )
     wait_for_ssh_connectivity(vm=vm)
     vmi_spec_domain = vm.vmi.instance.spec.domain

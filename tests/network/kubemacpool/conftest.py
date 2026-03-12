@@ -197,6 +197,7 @@ def all_nads(
 
 @pytest.fixture(scope="class")
 def vm_a(
+    admin_client,
     namespace,
     all_nads,
     worker_node1,
@@ -214,11 +215,13 @@ def vm_a(
         node_selector=get_node_selector_dict(node_selector=worker_node1.hostname),
         client=unprivileged_client,
         mac_pool=mac_pool,
+        admin_client=admin_client,
     )
 
 
 @pytest.fixture(scope="class")
 def vm_b(
+    admin_client,
     namespace,
     all_nads,
     worker_node2,
@@ -236,6 +239,7 @@ def vm_b(
         node_selector=get_node_selector_dict(node_selector=worker_node2.hostname),
         client=unprivileged_client,
         mac_pool=mac_pool,
+        admin_client=admin_client,
     )
 
 
@@ -278,7 +282,7 @@ def disabled_ns_vm(admin_client, disabled_ns, disabled_ns_nad, mac_pool):
         name=name,
         networks=networks,
         interfaces=networks.keys(),
-        body=fedora_vm_body(name=name),
+        body=fedora_vm_body(name=name, admin_client=admin_client),
         client=admin_client,
     ) as vm:
         mac_pool.append_macs(vm=vm)
@@ -297,7 +301,7 @@ def enabled_ns_vm(admin_client, kmp_enabled_ns, enabled_ns_nad, mac_pool):
         name=name,
         networks=networks,
         interfaces=networks.keys(),
-        body=fedora_vm_body(name=name),
+        body=fedora_vm_body(name=name, admin_client=admin_client),
         client=admin_client,
     ) as vm:
         mac_pool.append_macs(vm=vm)
@@ -316,7 +320,7 @@ def no_label_ns_vm(admin_client, no_label_ns, no_label_ns_nad, mac_pool):
         name=name,
         networks=networks,
         interfaces=networks.keys(),
-        body=fedora_vm_body(name=name),
+        body=fedora_vm_body(name=name, admin_client=admin_client),
         client=admin_client,
     ) as vm:
         mac_pool.append_macs(vm=vm)

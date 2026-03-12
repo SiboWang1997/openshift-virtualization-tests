@@ -65,6 +65,7 @@ def sriov_network_vlan(admin_client, sriov_node_policy, namespace, sriov_namespa
 
 @pytest.fixture(scope="class")
 def sriov_vm1(
+    admin_client,
     ipv4_supported_cluster,
     ipv6_supported_cluster,
     index_number,
@@ -89,12 +90,14 @@ def sriov_vm1(
         namespace=namespace,
         sriov_network=sriov_network,
         cloud_init_data=cloud_init_data,
+        admin_client=admin_client,
         worker=sriov_workers_node1,
     )
 
 
 @pytest.fixture(scope="class")
 def sriov_vm2(
+    admin_client,
     ipv4_supported_cluster,
     ipv6_supported_cluster,
     index_number,
@@ -119,12 +122,14 @@ def sriov_vm2(
         namespace=namespace,
         sriov_network=sriov_network,
         cloud_init_data=cloud_init_data,
+        admin_client=admin_client,
         worker=sriov_workers_node2,
     )
 
 
 @pytest.fixture(scope="class")
 def sriov_vm3(
+    admin_client,
     ipv4_supported_cluster,
     ipv6_supported_cluster,
     index_number,
@@ -149,12 +154,14 @@ def sriov_vm3(
         namespace=namespace,
         sriov_network=sriov_network_vlan,
         cloud_init_data=cloud_init_data,
+        admin_client=admin_client,
         worker=sriov_workers_node1,
     )
 
 
 @pytest.fixture(scope="class")
 def sriov_vm4(
+    admin_client,
     ipv4_supported_cluster,
     ipv6_supported_cluster,
     index_number,
@@ -179,6 +186,7 @@ def sriov_vm4(
         namespace=namespace,
         sriov_network=sriov_network_vlan,
         cloud_init_data=cloud_init_data,
+        admin_client=admin_client,
         worker=sriov_workers_node2,
     )
 
@@ -239,6 +247,7 @@ def sriov_network_mtu_9000(sriov_vm1, sriov_vm2):
 
 @pytest.fixture(scope="class")
 def sriov_vm_migrate(
+    admin_client,
     index_number,
     unprivileged_client,
     namespace,
@@ -262,6 +271,7 @@ def sriov_vm_migrate(
         namespace=namespace,
         sriov_network=sriov_network,
         cloud_init_data=cloud_init_data,
+        admin_client=admin_client,
     )
 
 
@@ -283,6 +293,7 @@ def sriov_dpdk_vm1(
     dpdk_template,
     index_number,
     sriov_worker_with_allocatable_1gi_huge_pages,
+    admin_client,
     unprivileged_client,
     sriov_network,
 ):
@@ -292,6 +303,7 @@ def sriov_dpdk_vm1(
         name="sriov-dpdk-vm1",
         namespace=dpdk_template.namespace,
         client=unprivileged_client,
+        admin_client=admin_client,
         node_selector=get_node_selector_dict(node_selector=sriov_worker_with_allocatable_1gi_huge_pages.hostname),
         template_object=dpdk_template,
         labels=Template.generate_template_labels(

@@ -33,6 +33,7 @@ LOGGER = logging.getLogger(__name__)
 @pytest.fixture()
 def vm_with_memory_load(
     request,
+    admin_client,
     unprivileged_client,
     namespace,
     golden_image_data_volume_template_for_test_scope_function,
@@ -41,6 +42,7 @@ def vm_with_memory_load(
 ):
     with vm_instance_from_template(
         request=request,
+        admin_client=admin_client,
         unprivileged_client=unprivileged_client,
         namespace=namespace,
         data_volume_template=golden_image_data_volume_template_for_test_scope_function,
@@ -73,6 +75,7 @@ def vmx_disabled_flag(nodes_cpu_architecture):
 def hotplugged_vm(
     request,
     namespace,
+    admin_client,
     unprivileged_client,
     golden_image_data_volume_template_for_test_scope_class,
     modern_cpu_for_migration,
@@ -85,6 +88,7 @@ def hotplugged_vm(
         labels=Template.generate_template_labels(**request.param["template_labels"]),
         namespace=namespace.name,
         client=unprivileged_client,
+        admin_client=admin_client,
         data_volume_template=golden_image_data_volume_template_for_test_scope_class,
         cpu_max_sockets=EIGHT_CPU_SOCKETS,
         # s390x doesn't support maxGuest as it doesn't support hotplug memory

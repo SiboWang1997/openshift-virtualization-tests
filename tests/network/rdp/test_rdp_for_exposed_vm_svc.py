@@ -25,12 +25,14 @@ pytestmark = [pytest.mark.ipv4]
 @pytest.fixture(scope="module")
 def rdp_vm(
     request,
+    admin_client,
     namespace,
     golden_image_data_source_scope_function,
     unprivileged_client,
 ):
     with vm_instance_from_template(
         request=request,
+        admin_client=admin_client,
         namespace=namespace,
         data_source=golden_image_data_source_scope_function,
         unprivileged_client=unprivileged_client,

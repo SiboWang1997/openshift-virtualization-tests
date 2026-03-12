@@ -111,6 +111,7 @@ def deployed_vms_for_descheduler_test(
     cpu_for_migration,
     vm_deployment_size,
     calculated_vm_deployment_for_descheduler_test,
+    admin_client,
 ):
     yield from deploy_vms(
         vm_prefix="vm-descheduler-test",
@@ -120,6 +121,7 @@ def deployed_vms_for_descheduler_test(
         vm_count=sum(calculated_vm_deployment_for_descheduler_test.values()),
         deployment_size=vm_deployment_size,
         descheduler_eviction=True,
+        admin_client=admin_client,
     )
 
 
@@ -167,7 +169,9 @@ def drain_uncordon_node(
 def all_existing_migrations_completed(admin_client, namespace):
     # Descheduler may trigger multiple migrations, need to wait when all succeeded
     for migration in VirtualMachineInstanceMigration.get(client=admin_client, namespace=namespace):
-        wait_for_migration_finished(namespace=namespace.name, migration=migration, timeout=TIMEOUT_5MIN)
+        wait_for_migration_finished(
+            client=admin_client, namespace=namespace.name, migration=migration, timeout=TIMEOUT_5MIN
+        )
 
 
 @pytest.fixture(scope="class")
@@ -211,6 +215,7 @@ def deployed_vms_for_utilization_imbalance(
     vm_deployment_size,
     calculated_vm_deployment_for_node_with_least_available_memory,
     node_affinity_for_descheduler_label,
+    admin_client,
 ):
     yield from deploy_vms(
         vm_prefix=request.param["vm_prefix"],
@@ -220,6 +225,7 @@ def deployed_vms_for_utilization_imbalance(
         vm_count=sum(calculated_vm_deployment_for_node_with_least_available_memory.values()),
         deployment_size=vm_deployment_size,
         descheduler_eviction=request.param["descheduler_eviction"],
+        admin_client=admin_client,
         vm_affinity=node_affinity_for_descheduler_label,
     )
 
@@ -232,6 +238,7 @@ def deployed_vms_on_labeled_node(
     vm_deployment_size,
     calculated_vm_deployment_for_node_with_least_available_memory,
     node_affinity_for_descheduler_label,
+    admin_client,
 ):
     yield from deploy_vms(
         vm_prefix="node-labels-test",
@@ -241,6 +248,7 @@ def deployed_vms_on_labeled_node(
         vm_count=sum(calculated_vm_deployment_for_node_with_least_available_memory.values()),
         deployment_size=vm_deployment_size,
         descheduler_eviction=True,
+        admin_client=admin_client,
         vm_affinity=node_affinity_for_descheduler_label,
     )
 

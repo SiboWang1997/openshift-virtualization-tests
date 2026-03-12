@@ -46,6 +46,7 @@ TESTS_CLASS_NAME = "TestVGPURHELGPUSSpec"
 
 @pytest.fixture(scope="class")
 def gpu_vmb(
+    admin_client,
     unprivileged_client,
     namespace,
     golden_image_data_volume_template_for_test_scope_class,
@@ -59,6 +60,7 @@ def gpu_vmb(
         name="rhel-vgpu-gpus-spec-vm2",
         namespace=namespace.name,
         client=unprivileged_client,
+        admin_client=admin_client,
         labels=Template.generate_template_labels(**RHEL_LATEST_LABELS),
         data_volume_template=golden_image_data_volume_template_for_test_scope_class,
         vm_affinity=gpu_vma.vm_affinity,
@@ -71,6 +73,7 @@ def gpu_vmb(
 @pytest.fixture(scope="class")
 def node_mdevtype_gpu_vm(
     request,
+    admin_client,
     unprivileged_client,
     namespace,
     golden_image_data_volume_template_for_test_scope_class,
@@ -86,6 +89,7 @@ def node_mdevtype_gpu_vm(
     """
     with vm_instance_from_template(
         request=request,
+        admin_client=admin_client,
         namespace=namespace,
         unprivileged_client=unprivileged_client,
         data_volume_template=golden_image_data_volume_template_for_test_scope_class,

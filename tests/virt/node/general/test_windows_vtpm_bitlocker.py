@@ -92,6 +92,7 @@ def file_system_persistent_storage_hco_config(
 def windows_vtpm_vm(
     request,
     namespace,
+    admin_client,
     unprivileged_client,
     file_system_persistent_storage_hco_config,
     golden_image_data_volume_template_for_test_scope_class,
@@ -106,6 +107,7 @@ def windows_vtpm_vm(
         ),
         namespace=namespace.name,
         client=unprivileged_client,
+        admin_client=admin_client,
         data_volume_template=golden_image_data_volume_template_for_test_scope_class,
         tpm_params=persistent_enabled,
         efi_params=persistent_enabled,

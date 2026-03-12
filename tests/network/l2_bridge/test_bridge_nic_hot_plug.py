@@ -35,12 +35,13 @@ SECONDARY_SETUP_INTERFACE_NAME = "eth1"
 
 
 @pytest.fixture(scope="class")
-def running_vm_for_nic_hot_plug(namespace, unprivileged_client):
+def running_vm_for_nic_hot_plug(admin_client, namespace, unprivileged_client):
     vm_name = f"{HOT_PLUG_STR}-test-vm"
     with create_vm_for_hot_plug(
         namespace_name=namespace.name,
         vm_name=vm_name,
         client=unprivileged_client,
+        admin_client=admin_client,
     ) as vm:
         yield vm
 
@@ -99,6 +100,7 @@ def multiple_hot_plugged_interfaces(running_vm_for_nic_hot_plug, network_attachm
 
 @pytest.fixture(scope="module")
 def running_utility_vm_for_connectivity_check(
+    admin_client,
     namespace,
     unprivileged_client,
     network_attachment_definition_for_hot_plug,
@@ -112,6 +114,7 @@ def running_utility_vm_for_connectivity_check(
         bridge_nad=network_attachment_definition_for_hot_plug,
         vm_name=f"utility-{HOT_PLUG_STR}-vm",
         ipv4_address_suffix=next(index_number),
+        admin_client=admin_client,
     )
 
 
@@ -126,6 +129,7 @@ def hot_plugged_interface_with_address(running_vm_for_nic_hot_plug, index_number
 
 @pytest.fixture(scope="class")
 def running_vm_with_secondary_and_hot_plugged_interfaces(
+    admin_client,
     namespace,
     unprivileged_client,
     network_attachment_definition_for_hot_plug,
@@ -137,6 +141,7 @@ def running_vm_with_secondary_and_hot_plugged_interfaces(
         bridge_nad=network_attachment_definition_for_hot_plug,
         vm_name=f"vm-with-sec-and-{HOT_PLUG_STR}-interfaces",
         ipv4_address_suffix=next(index_number),
+        admin_client=admin_client,
     )
 
 
@@ -166,12 +171,13 @@ def hot_plugged_second_interface_with_address(
 
 
 @pytest.fixture()
-def running_vm_for_jumbo_nic_hot_plug(namespace, unprivileged_client):
+def running_vm_for_jumbo_nic_hot_plug(admin_client, namespace, unprivileged_client):
     vm_name = f"jumbo-{HOT_PLUG_STR}-test-vm"
     with create_vm_for_hot_plug(
         namespace_name=namespace.name,
         vm_name=vm_name,
         client=unprivileged_client,
+        admin_client=admin_client,
     ) as vm:
         yield vm
 
@@ -276,11 +282,12 @@ def flat_overlay_network_attachment_definition_for_hot_plug(
 
 
 @pytest.fixture()
-def vm_for_hot_plug_and_kmp(namespace, unprivileged_client):
+def vm_for_hot_plug_and_kmp(admin_client, namespace, unprivileged_client):
     with create_vm_for_hot_plug(
         namespace_name=namespace.name,
         vm_name=f"{HOT_PLUG_STR}-kmp-release-vm",
         client=unprivileged_client,
+        admin_client=admin_client,
     ) as vm:
         yield vm
 
@@ -396,6 +403,7 @@ def hot_unplug_secondary_interface_from_setup(
 
 @pytest.fixture()
 def vm1_with_hot_plugged_sriov_interface(
+    admin_client,
     namespace,
     unprivileged_client,
     sriov_network_for_hot_plug,
@@ -407,11 +415,13 @@ def vm1_with_hot_plugged_sriov_interface(
         sriov_network_for_hot_plug=sriov_network_for_hot_plug,
         ipv4_address=random_ipv4_address(net_seed=0, host_address=next(index_number)),
         client=unprivileged_client,
+        admin_client=admin_client,
     )
 
 
 @pytest.fixture()
 def vm2_with_hot_plugged_sriov_interface(
+    admin_client,
     namespace,
     unprivileged_client,
     sriov_network_for_hot_plug,
@@ -423,6 +433,7 @@ def vm2_with_hot_plugged_sriov_interface(
         sriov_network_for_hot_plug=sriov_network_for_hot_plug,
         ipv4_address=random_ipv4_address(net_seed=0, host_address=next(index_number)),
         client=unprivileged_client,
+        admin_client=admin_client,
     )
 
 

@@ -40,6 +40,7 @@ TESTS_CLASS_NAME = "TestVGPUWindowsGPUSSpec"
 
 @pytest.fixture(scope="class")
 def gpu_vmc(
+    admin_client,
     unprivileged_client,
     namespace,
     golden_image_data_volume_template_for_test_scope_class,
@@ -53,6 +54,7 @@ def gpu_vmc(
         name="win10-vgpu-gpus-spec-vm2",
         namespace=namespace.name,
         client=unprivileged_client,
+        admin_client=admin_client,
         labels=Template.generate_template_labels(**WINDOWS_10_TEMPLATE_LABELS),
         data_volume_template=golden_image_data_volume_template_for_test_scope_class,
         node_selector=gpu_vma.node_selector,

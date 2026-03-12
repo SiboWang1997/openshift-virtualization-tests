@@ -167,7 +167,7 @@ def l2_bridge_all_nads(dhcp_nad, custom_eth_type_llpd_nad, mpls_nad, dot1q_nad):
 
 @pytest.fixture(scope="class")
 def l2_bridge_running_vm_a(
-    namespace, worker_node1, l2_bridge_all_nads, dhcp_nad, unprivileged_client, l2_bridge_running_vm_b
+    admin_client, namespace, worker_node1, l2_bridge_all_nads, dhcp_nad, unprivileged_client, l2_bridge_running_vm_b
 ):
     dhcpd_data = DHCP_SERVER_CONF_FILE.format(
         DHCP_IP_SUBNET=DHCP_IP_SUBNET,
@@ -200,6 +200,7 @@ def l2_bridge_running_vm_a(
         mpls_dest_ip=VMB_MPLS_LOOPBACK_IP,
         mpls_dest_tag=VMB_MPLS_ROUTE_TAG,
         mpls_route_next_hop=random_ipv4_address(net_seed=4, host_address=2),
+        admin_client=admin_client,
         client=unprivileged_client,
         node_selector=get_node_selector_dict(node_selector=worker_node1.hostname),
     ) as vm:
@@ -209,7 +210,7 @@ def l2_bridge_running_vm_a(
 
 
 @pytest.fixture(scope="class")
-def l2_bridge_running_vm_b(namespace, worker_node2, l2_bridge_all_nads, unprivileged_client):
+def l2_bridge_running_vm_b(admin_client, namespace, worker_node2, l2_bridge_all_nads, unprivileged_client):
     interface_ip_addresses = [
         random_ipv4_address(net_seed=0, host_address=2),
         random_ipv4_address(net_seed=2, host_address=2),
@@ -226,6 +227,7 @@ def l2_bridge_running_vm_b(namespace, worker_node2, l2_bridge_all_nads, unprivil
         mpls_dest_ip=VMA_MPLS_LOOPBACK_IP,
         mpls_dest_tag=VMA_MPLS_ROUTE_TAG,
         mpls_route_next_hop=random_ipv4_address(net_seed=4, host_address=1),
+        admin_client=admin_client,
         client=unprivileged_client,
         node_selector=get_node_selector_dict(node_selector=worker_node2.hostname),
     ) as vm:

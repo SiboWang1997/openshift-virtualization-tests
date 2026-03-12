@@ -33,6 +33,7 @@ class CustomWindowsVM(VirtualMachineForTestsFromTemplate):
         name,
         namespace,
         client,
+        admin_client,
         data_volume_template,
         os_dict,
         nad,
@@ -43,6 +44,7 @@ class CustomWindowsVM(VirtualMachineForTestsFromTemplate):
             name=name,
             namespace=namespace,
             client=client,
+            admin_client=admin_client,
             data_volume_template=data_volume_template,
             labels=Template.generate_template_labels(**os_dict["template_labels"]),
             cpu_cores=1,
@@ -151,6 +153,7 @@ def windows_custom_drive_d(unprivileged_client, namespace):
 
 @pytest.fixture(scope="class")
 def custom_windows_vm(
+    admin_client,
     windows_custom_bridge_nad,
     windows_custom_drive_d,
     golden_image_data_volume_template_for_test_scope_class,
@@ -161,6 +164,7 @@ def custom_windows_vm(
         name="custom-windows-vm",
         namespace=windows_custom_bridge_nad.namespace,
         client=unprivileged_client,
+        admin_client=admin_client,
         data_volume_template=golden_image_data_volume_template_for_test_scope_class,
         os_dict=WINDOWS_2019,
         nad=windows_custom_bridge_nad,

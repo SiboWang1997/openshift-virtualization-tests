@@ -27,13 +27,14 @@ def vm_deploys():
 
 
 @pytest.fixture()
-def container_disk_vms(vm_deploys, namespace, unprivileged_client):
+def container_disk_vms(vm_deploys, namespace, unprivileged_client, admin_client):
     LOGGER.info("Deploying VM with container disk")
     yield from create_containerdisk_vms(
         vm_deploys=vm_deploys,
         client=unprivileged_client,
         namespace=namespace,
         name="linux-multi-mig-containerdisk-vm",
+        admin_client=admin_client,
     )
 
 
@@ -42,6 +43,7 @@ def multi_vms(
     request,
     vm_deploys,
     namespace,
+    admin_client,
     unprivileged_client,
     multi_datasources,
     rhsm_created_secret,
@@ -49,6 +51,7 @@ def multi_vms(
     vm_cpu_flags,
 ):
     yield from create_dv_vms(
+        admin_client=admin_client,
         vm_deploys=vm_deploys,
         client=unprivileged_client,
         namespace=namespace,

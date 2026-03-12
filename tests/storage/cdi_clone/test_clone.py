@@ -167,6 +167,7 @@ def test_successful_vm_restart_with_cloned_dv(
     indirect=["data_volume_multi_storage_scope_function"],
 )
 def test_successful_vm_from_cloned_dv_windows(
+    admin_client,
     unprivileged_client,
     data_volume_multi_storage_scope_function,
     vm_params,
@@ -183,6 +184,7 @@ def test_successful_vm_from_cloned_dv_windows(
     ) as cdv:
         cdv.wait_for_dv_success(timeout=WINDOWS_CLONE_TIMEOUT)
         create_windows_vm_validate_guest_agent_info(
+            admin_client=admin_client,
             dv=cdv,
             namespace=namespace,
             unprivileged_client=unprivileged_client,

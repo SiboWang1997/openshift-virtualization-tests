@@ -48,9 +48,16 @@ def vm_generated_new_password():
 
 
 @pytest.fixture(scope="class")
-def persistence_vm(request, golden_image_data_volume_template_for_test_scope_class, unprivileged_client, namespace):
+def persistence_vm(
+    request,
+    admin_client,
+    golden_image_data_volume_template_for_test_scope_class,
+    unprivileged_client,
+    namespace,
+):
     with vm_instance_from_template(
         request=request,
+        admin_client=admin_client,
         unprivileged_client=unprivileged_client,
         namespace=namespace,
         data_volume_template=golden_image_data_volume_template_for_test_scope_class,

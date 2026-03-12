@@ -37,12 +37,14 @@ def check_disk_io_option_on_domain_xml(vm, expected_disk_io_option, admin_client
 @pytest.fixture()
 def disk_options_vm(
     request,
+    admin_client,
     unprivileged_client,
     namespace,
     golden_image_data_volume_template_for_test_scope_class,
 ):
     with vm_instance_from_template(
         request=request,
+        admin_client=admin_client,
         unprivileged_client=unprivileged_client,
         namespace=namespace,
         data_volume_template=golden_image_data_volume_template_for_test_scope_class,

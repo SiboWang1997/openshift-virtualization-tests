@@ -70,13 +70,14 @@ def vm_container_disk_fedora(
     unprivileged_client,
     cpu_for_migration,
     namespace,
+    admin_client,
 ):
     name = "vm-nodemaintenance"
     with VirtualMachineForTests(
         name=name,
         namespace=namespace.name,
         cpu_model=cpu_for_migration,
-        body=fedora_vm_body(name=name),
+        body=fedora_vm_body(name=name, admin_client=admin_client),
         client=unprivileged_client,
     ) as vm:
         running_vm(vm=vm)

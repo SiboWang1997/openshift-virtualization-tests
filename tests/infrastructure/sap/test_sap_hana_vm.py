@@ -70,6 +70,7 @@ class SAPHANAVirtaulMachine(VirtualMachineForTestsFromTemplate):
         name,
         namespace,
         client,
+        admin_client,
         labels,
         cloud_init_data,
         data_volume_template,
@@ -82,6 +83,7 @@ class SAPHANAVirtaulMachine(VirtualMachineForTestsFromTemplate):
             name=name,
             namespace=namespace,
             client=client,
+            admin_client=admin_client,
             labels=labels,
             cloud_init_data=cloud_init_data,
             data_volume_template=data_volume_template,
@@ -361,6 +363,7 @@ def sriov_nads(admin_client, namespace, sriov_network_node_policy, sriov_namespa
 @pytest.fixture(scope="class")
 def sap_hana_vm(
     request,
+    admin_client,
     unprivileged_client,
     namespace,
     sriov_nads,
@@ -374,6 +377,7 @@ def sap_hana_vm(
         "name": SAP_HANA_VM_NAME,
         "namespace": namespace.name,
         "client": unprivileged_client,
+        "admin_client": admin_client,
         "labels": sap_hana_template_labels,
         "data_volume_template": sap_hana_data_volume_templates,
         "template_params": template_params,

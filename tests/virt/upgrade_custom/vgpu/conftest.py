@@ -57,6 +57,7 @@ def rhel_data_source(
 
 @pytest.fixture(scope="session")
 def rhel_vm_for_upgrade_session_scope(
+    admin_client,
     unprivileged_client,
     upgrade_namespace_scope_session,
     supported_gpu_device,
@@ -64,6 +65,7 @@ def rhel_vm_for_upgrade_session_scope(
     rhel_data_source,
 ):
     with vm_from_template(
+        admin_client=admin_client,
         vm_name="rhel-vgpu-gpus-spec-vm",
         client=unprivileged_client,
         namespace=upgrade_namespace_scope_session.name,

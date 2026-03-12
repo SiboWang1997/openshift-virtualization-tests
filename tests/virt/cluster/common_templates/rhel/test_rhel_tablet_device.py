@@ -146,7 +146,13 @@ class TestRHELTabletDeviceNegative:
         indirect=False,
     )
     def test_tablet_invalid_usb_tablet_device(
-        self, vm_name, vm_dict, unprivileged_client, namespace, golden_image_data_source_for_test_scope_class
+        self,
+        vm_name,
+        vm_dict,
+        admin_client,
+        unprivileged_client,
+        namespace,
+        golden_image_data_source_for_test_scope_class,
     ):
         LOGGER.info("Test tablet device - wrong device bus.")
 
@@ -155,6 +161,7 @@ class TestRHELTabletDeviceNegative:
                 name=vm_name,
                 namespace=namespace.name,
                 client=unprivileged_client,
+                admin_client=admin_client,
                 data_source=golden_image_data_source_for_test_scope_class,
                 labels=Template.generate_template_labels(**RHEL_LATEST_LABELS),
                 vm_dict=vm_dict,
@@ -172,7 +179,7 @@ class TestRHELTabletDeviceNegative:
         indirect=False,
     )
     def test_tablet_invalid_type_tablet_device(
-        self, vm_dict, unprivileged_client, namespace, golden_image_data_source_for_test_scope_class
+        self, vm_dict, admin_client, unprivileged_client, namespace, golden_image_data_source_for_test_scope_class
     ):
         LOGGER.info("Test tablet device - wrong device type.")
 
@@ -181,6 +188,7 @@ class TestRHELTabletDeviceNegative:
                 name="rhel-keyboard-tablet-device-vm",
                 namespace=namespace.name,
                 client=unprivileged_client,
+                admin_client=admin_client,
                 data_source=golden_image_data_source_for_test_scope_class,
                 labels=Template.generate_template_labels(**RHEL_LATEST_LABELS),
                 vm_dict=vm_dict,

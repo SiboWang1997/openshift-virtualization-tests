@@ -82,12 +82,13 @@ def vm_for_migration_policy_test(
     request,
     namespace,
     cpu_for_migration,
+    admin_client,
 ):
     name = "vm-for-migration-policy-test"
     with VirtualMachineForTests(
         name=name,
         namespace=namespace.name,
-        body=fedora_vm_body(name=name),
+        body=fedora_vm_body(name=name, admin_client=admin_client),
         additional_labels=request.param,
         cpu_model=cpu_for_migration,
     ) as vm:

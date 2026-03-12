@@ -36,6 +36,7 @@ class TestDisklessVM:
     def test_diskless_vm_creation(
         self,
         vm_params,
+        admin_client,
         unprivileged_client,
         namespace,
         golden_image_data_source_for_test_scope_class,
@@ -45,6 +46,7 @@ class TestDisklessVM:
             name=vm_params["vm_name"],
             namespace=namespace.name,
             client=unprivileged_client,
+            admin_client=admin_client,
             labels=Template.generate_template_labels(**vm_params["template_labels"]),
             data_source=golden_image_data_source_for_test_scope_class,
             diskless_vm=True,

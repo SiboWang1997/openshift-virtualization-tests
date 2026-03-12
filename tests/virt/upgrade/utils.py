@@ -170,7 +170,8 @@ def verify_run_strategy_vmi_status(run_strategy_vmi_list):
 
 @contextmanager
 def vm_from_template(
-    client,
+    admin_client: DynamicClient,
+    client: DynamicClient,
     namespace,
     vm_name,
     data_source,
@@ -187,6 +188,7 @@ def vm_from_template(
         name=vm_name,
         namespace=namespace,
         client=client,
+        admin_client=admin_client,
         labels=Template.generate_template_labels(**template_labels),
         data_source=data_source,
         cpu_model=cpu_model,

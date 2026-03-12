@@ -23,12 +23,13 @@ def assert_vmi_free_page_reporting(vm, expected_free_page_reporting, admin_clien
 @pytest.fixture(scope="class")
 def free_page_reporting_vm(
     namespace,
+    admin_client,
 ):
     name = "free-page-reporting-vm"
     with VirtualMachineForTests(
         name=name,
         namespace=namespace.name,
-        body=fedora_vm_body(name=name),
+        body=fedora_vm_body(name=name, admin_client=admin_client),
     ) as vm:
         running_vm(vm=vm)
         yield vm
@@ -37,12 +38,13 @@ def free_page_reporting_vm(
 @pytest.fixture()
 def vm_with_dedicated_cpu(
     namespace,
+    admin_client,
 ):
     name = "vm-with-dedicated-cpu"
     with VirtualMachineForTests(
         name=name,
         namespace=namespace.name,
-        body=fedora_vm_body(name=name),
+        body=fedora_vm_body(name=name, admin_client=admin_client),
         cpu_placement=True,
     ) as vm:
         running_vm(vm=vm)
@@ -50,12 +52,12 @@ def vm_with_dedicated_cpu(
 
 
 @pytest.fixture()
-def vm_with_hugepages(namespace):
+def vm_with_hugepages(namespace, admin_client):
     name = "vm-with-hugepage"
     with VirtualMachineForTests(
         name=name,
         namespace=namespace.name,
-        body=fedora_vm_body(name=name),
+        body=fedora_vm_body(name=name, admin_client=admin_client),
         hugepages_page_size="1Gi",
     ) as vm:
         running_vm(vm=vm)

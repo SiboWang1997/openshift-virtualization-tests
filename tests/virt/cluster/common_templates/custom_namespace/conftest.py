@@ -132,6 +132,7 @@ def opted_out_custom_template_namespace(
 @pytest.fixture()
 def vm_from_template_labels(admin_client, first_base_template, custom_vm_template_namespace):
     with diskless_vm_from_template(
+        admin_client=admin_client,
         client=admin_client,
         name="custom-template-ns-vm",
         namespace=custom_vm_template_namespace,

@@ -444,12 +444,14 @@ def test_virtctl_image_upload_dv_with_exist_pvc(
     indirect=["uploaded_dv_with_immediate_binding"],
 )
 def test_successful_vm_from_uploaded_dv_windows(
+    admin_client,
     unprivileged_client,
     namespace,
     uploaded_dv_with_immediate_binding,
     vm_params,
 ):
     create_windows_vm_validate_guest_agent_info(
+        admin_client=admin_client,
         dv=uploaded_dv_with_immediate_binding,
         namespace=namespace,
         unprivileged_client=unprivileged_client,
